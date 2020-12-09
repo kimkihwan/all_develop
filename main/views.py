@@ -322,7 +322,7 @@ def look_up_super(request):
             else:
                 move_datetime = datetime.datetime(year=year, month=month + 1, day=1)
             data = mapping_cal(user, move_datetime.year, move_datetime.month, 3)
-
+    data['username'] = user
     return render(request, 'look_up_super.html', data)
 
 
@@ -331,7 +331,6 @@ def look_up_super_detail(request, username):
     if User.objects.filter(username=username):
         user = User.objects.get(username=username)
         today = datetime.datetime.now()
-        data = mapping_cal(user, today.year, today.month, 2)
         if request.method == "POST":
             form = request.POST
             year = int(form['year'])
@@ -349,10 +348,11 @@ def look_up_super_detail(request, username):
                 else:
                     move_datetime = datetime.datetime(year=year, month=month + 1, day=1)
                 data = mapping_cal(user, move_datetime.year, move_datetime.month, 2)
+        else:
+            data = mapping_cal(user, today.year, today.month, 2)
         data['username'] = username
         data['all_users'] = User.objects.filter(is_superuser=False)
         return render(request, 'look_up_super.html', data)
-
     else:
         return False
 
